@@ -4782,3 +4782,25 @@ python manage.py check
     outline: 3px solid var(--accent);
     outline-offset: 3px;
 }
+
+
+/* Scroll-linked active navigation indicator */
+.navigation a[aria-current="location"] {
+    color: var(--accent);
+}
+
+.navigation a[aria-current="location"]::after {
+    width: 14px;
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Keep the indicator visible in the mobile navigation menu. */
+@media (max-width: 700px) {
+    .navigation a[aria-current="location"]::after {
+        display: block;
+        bottom: 7px;
+        width: 14px;
+        height: 2px;
+    }
+}

@@ -34,6 +34,93 @@ typingElements.forEach((element) => {
     element.dataset.typingText = element.textContent.trim();
 });
 
+// Scroll-linked heading typing and active navigation.
+if (!prefersReducedMotion) {
+    const sections = Array.from(
+        document.querySelectorAll("main section[id]")
+    );
+
+    const sectionLinks = navigation
+        ? Array.from(navigation.querySelectorAll('a[href*="#"]'))
+        : [];
+
+    let scrollFramePending = false;
+
+    function updateScrollEffects() {
+        scrollFramePending = false;
+
+        // Calculate heading character visibility from scroll position.
+        typingElements.forEach((element) => {
+            const fullText = element.dataset.typingText;
+            const rect = element.getBoundingClientRect();
+
+            const start = window.innerHeight * 0.82;
+            const end = window.innerHeight * 0.48;
+
+            const progress = Math.max(
+                0,
+                Math.min(1, (start - rect.top) / (start - end))
+            );
+
+            const visibleCharacters = Math.round(
+                progress * fullText.length
+            );
+
+            const visibleText = fullText.slice(0, visibleCharacters);
+
+            if (element.textContent !== visibleText) {
+                element.textContent = visibleText;
+            }
+
+            element.classList.toggle(
+                "is-typing",
+                visibleCharacters > 0 &&
+                visibleCharacters < fullText.length
+            );
+        });
+
+        // Identify the section currently crossing the activation line.
+        if (sections.length && sectionLinks.length) {
+            const activationLine = window.innerHeight * 0.36;
+            let activeSection = sections[0];
+
+            sections.forEach((section) => {
+                const rect = section.getBoundingClientRect();
+
+                if (rect.top <= activationLine) {
+                    activeSection = section;
+                }
+            });
+
+            sectionLinks.forEach((link) => {
+                const targetId = link.hash.slice(1);
+
+                if (targetId === activeSection.id) {
+                    link.setAttribute("aria-current", "location");
+                } else {
+                    link.removeAttribute("aria-current");
+                }
+            });
+        }
+    }
+
+    function requestScrollUpdate() {
+        if (!scrollFramePending) {
+            scrollFramePending = true;
+            window.requestAnimationFrame(updateScrollEffects);
+        }
+    }
+
+    window.addEventListener("scroll", requestScrollUpdate, {
+        passive: true
+    });
+
+    window.addEventListener("resize", requestScrollUpdate);
+
+    // Also handles pages restored at a previous scroll position.
+    requestScrollUpdate();
+}
+
 if (prefersReducedMotion || !("IntersectionObserver" in window)) {
     revealElements.forEach((element) => {
         element.classList.add("visible");
@@ -59,64 +146,6 @@ if (prefersReducedMotion || !("IntersectionObserver" in window)) {
         revealObserver.observe(element);
     });
 
-    // Typewriter effect for the three main section headings.
-    const typingTimers = new WeakMap();
-
-    function resetTyping(element) {
-        const timer = typingTimers.get(element);
-
-        if (timer) {
-            clearTimeout(timer);
-            typingTimers.delete(element);
-        }
-
-        element.textContent = "";
-        element.classList.remove("is-typing");
-    }
-
-    function startTyping(element) {
-        resetTyping(element);
-
-        const fullText = element.dataset.typingText;
-        let position = 0;
-
-        element.classList.add("is-typing");
-
-        function typeNextCharacter() {
-            if (position < fullText.length) {
-                element.textContent += fullText.charAt(position);
-                position++;
-
-                const timer = setTimeout(typeNextCharacter, 42);
-                typingTimers.set(element, timer);
-            } else {
-                typingTimers.delete(element);
-                element.classList.remove("is-typing");
-            }
-        }
-
-        typeNextCharacter();
-    }
-
-    const typingObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    startTyping(entry.target);
-                } else {
-                    resetTyping(entry.target);
-                }
-            });
-        },
-        {
-            threshold: 0.25,
-            rootMargin: "0px 0px -8% 0px"
-        }
-    );
-
-    typingElements.forEach((element) => {
-        typingObserver.observe(element);
-    });
 }
 
 // Animated glowing cursor

@@ -39,12 +39,6 @@ Infrastructure, networking and software engineering projects by Gerrad Chibuye.
                          style="background-image: linear-gradient(rgba(20, 30, 35, 0.35), rgba(20, 30, 35, 0.65)), url('{{ project.cover_image.url }}'); background-size: cover; background-position: center;"
                          {% endif %}>
 
-                        <span>
-                            {{ forloop.counter|stringformat:"02d" }}
-                            / {{ project.get_category_display|upper }}
-                        </span>
-
-                        <strong>{{ project.title|upper }}</strong>
 
                     </div>
 
