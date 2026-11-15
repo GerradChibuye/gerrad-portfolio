@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} | Gerrad Chibuye{% endblock %}
+
+{% block meta_description %}{{ project.summary }}{% endblock %}
+{% block og_title %}{{ project.title }} | Gerrad Chibuye{% endblock %}
+{% block og_description %}{{ project.summary }}{% endblock %}
+{% block twitter_title %}{{ project.title }} | Gerrad Chibuye{% endblock %}
+{% block twitter_description %}{{ project.summary }}{% endblock %}
+
+{% block content %}
+
+<section class="section project-detail-section">
+    <div class="container">
+
+        <a href="{% url 'projects:list' %}" class="project-detail-back">
+            ← Back to projects
+        </a>
+
+        <header class="project-detail-header reveal">
+
+            <div class="project-detail-labels">
+                <span class="eyebrow">
+                    {{ project.get_category_display|upper }}
+                </span>
+
+                <span class="project-status">
+                    {{ project.get_status_display|upper }}
+                </span>
+            </div>
+
+            <h1>{{ project.title }}</h1>
+
+            <p class="project-detail-summary">
+                {{ project.summary }}
+            </p>
+
+            <div class="project-detail-meta">
+                <span>PROJECT · {{ project.created_at|date:"F Y"|upper }}</span>
+            </div>
+
+        </header>
+
+        {% if project.cover_image %}
+            <div class="project-detail-image reveal">
+                <img
+                    src="{{ project.cover_image.url }}"
+                    alt="{{ project.title }} project image">
+            </div>
+        {% endif %}
+
+        <div class="project-detail-content">
+
+            <main class="project-detail-description reveal">
+
+                <span class="eyebrow">PROJECT OVERVIEW</span>
+
+                <h2>About this project</h2>
+
+                <div class="project-detail-prose">
+                    {{ project.description|linebreaks }}
+                </div>
+
+            </main>
+
+            <aside class="project-detail-sidebar reveal">
+
+                <div class="project-detail-sidebar-block">
+
+                    <span class="eyebrow">TECHNOLOGIES</span>
+
+                    <div class="project-detail-technologies">
+                        {% for technology in project.technologies.all %}
+                            <span>{{ technology.name }}</span>
+                        {% empty %}
+                            <p>Technology information will be added soon.</p>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                {% if project.github_url or project.live_url %}
+                    <div class="project-detail-sidebar-block">
+
+                        <span class="eyebrow">PROJECT LINKS</span>
+
+                        <div class="project-detail-links">
+
+                            {% if project.github_url %}
+                                <a
+                                    href="{{ project.github_url }}"
+                                    class="button button-secondary"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+                                    View source code ↗
+                                </a>
+                            {% endif %}
+
+                            {% if project.live_url %}
+                                <a
+                                    href="{{ project.live_url }}"
+                                    class="button button-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+                                    View live project ↗
+                                </a>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+                {% endif %}
+
+            </aside>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

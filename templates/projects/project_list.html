@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Projects | Gerrad Chibuye{% endblock %}
+
+{% block meta_description %}
+Infrastructure, networking and software engineering projects by Gerrad Chibuye.
+{% endblock %}
+{% block og_title %}Engineering Projects | Gerrad Chibuye{% endblock %}
+{% block og_description %}Infrastructure, networking and software engineering projects by Gerrad Chibuye.{% endblock %}
+{% block twitter_title %}Engineering Projects | Gerrad Chibuye{% endblock %}
+{% block twitter_description %}Infrastructure, networking and software engineering projects by Gerrad Chibuye.{% endblock %}
+
+{% block content %}
+
+<section class="section all-projects-section">
+    <div class="container">
+
+        <header class="all-projects-header reveal">
+            <span class="eyebrow">PROJECT PORTFOLIO</span>
+
+            <h1>Engineering through practical projects.</h1>
+
+            <p>
+                A collection of infrastructure, networking and software
+                projects demonstrating practical engineering work.
+            </p>
+        </header>
+
+        <div class="project-grid all-projects-grid">
+
+            {% for project in projects %}
+
+                {% cycle 'project-visual-blue' 'project-visual-dark' 'project-visual-light' as visual_class silent %}
+
+                <article class="project-card reveal">
+
+                    <div class="project-visual {{ visual_class }}"
+                         {% if project.cover_image %}
+                         style="background-image: linear-gradient(rgba(20, 30, 35, 0.35), rgba(20, 30, 35, 0.65)), url('{{ project.cover_image.url }}'); background-size: cover; background-position: center;"
+                         {% endif %}>
+
+                        <span>
+                            {{ forloop.counter|stringformat:"02d" }}
+                            / {{ project.get_category_display|upper }}
+                        </span>
+
+                        <strong>{{ project.title|upper }}</strong>
+
+                    </div>
+
+                    <div class="project-info">
+
+                        <span class="project-status">
+                            {{ project.get_status_display|upper }}
+                        </span>
+
+                        <h3>{{ project.title }}</h3>
+
+                        <p>{{ project.summary }}</p>
+
+                        {% if project.technologies.all %}
+                            <div class="project-technologies">
+                                {% for technology in project.technologies.all %}
+                                    <span>{{ technology.name }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <a href="{% url 'projects:detail' project.slug %}"
+                           class="text-link">
+                            Project details <span>↗</span>
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="projects-empty">
+                    <h3>Projects coming soon.</h3>
+                    <p>
+                        Infrastructure, networking and software projects
+                        will be published here.
+                    </p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="all-projects-footer">
+            <a href="{% url 'home' %}#projects" class="text-link">
+                ← Back to homepage
+            </a>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# Testing and coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Editors and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Allow the example environment template
+!.env.example
+
+# Local backups
+backups/
+
+# Temporary editor and development backups
+*.bak
+*.bak-*
+*.backup
+*.backup-*
+*.before-*
+*.pre-*
+*.seo-backup
+
+# Development backup files
+*.bak*
+*.backup*
+*.before-*
+*.pre-*
+*.seo-backup
